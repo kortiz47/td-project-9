@@ -8,7 +8,7 @@ const morgan = require('morgan');
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
 //connection to the database
-const db = require('./models/index');
+const db = require('./db/index');
 const sequelize = db.sequelize;
 
 //Test the Connection
