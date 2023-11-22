@@ -3,12 +3,12 @@
 // load modules
 const express = require('express');
 const morgan = require('morgan');
-const indexRoute = require('./routes/index');
+const indexRoute = require('./routes');
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
 //connection to the database
-const db = require('./db/index');
+const db = require('./models/index');
 const sequelize = db.sequelize;
 
 //Test the Connection

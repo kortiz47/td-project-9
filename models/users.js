@@ -14,11 +14,11 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
     User.init({
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },
+        // id: {
+        //     type: DataTypes.INTEGER,
+        //     primaryKey: true,
+        //     autoIncrement: true,
+        // },
         firstName: {
             type: DataTypes.STRING,
         },
@@ -31,13 +31,16 @@ module.exports = (sequelize, DataTypes) => {
         password: {
             type: DataTypes.STRING
         }
-    }, {
-        sequelize,
-        modelName: 'Users',
-    });
+    }, { sequelize });
     User.associate = (models) => {
         // TODO Add associations.
-        User.hasMany(models.Course);
+        User.hasMany(models.Course, {
+            // as: 'userId',
+            foreignKey: {
+                fieldName: 'userId',
+                allowNull: false,
+            }
+        });
     };
     return User;
 };

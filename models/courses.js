@@ -1,7 +1,6 @@
 //ADDED ON STEP 4 - CREATE COURSES MODEL
 'use strict';
 const { Model } = require('sequelize');
-//const { Sequelize } = require('..');
 
 module.exports = (sequelize, DataTypes) => {
     class Course extends Model {
@@ -15,11 +14,11 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
     Course.init({
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },
+        // id: {
+        //     type: DataTypes.INTEGER,
+        //     primaryKey: true,
+        //     autoIncrement: true
+        // },
         title: {
             type: DataTypes.STRING,
         },
@@ -32,13 +31,16 @@ module.exports = (sequelize, DataTypes) => {
         materialsNeeded: {
             type: DataTypes.STRING
         }
-    }, {
-        sequelize,
-        modelName: 'Courses',
-    });
+    }, { sequelize });
     Course.associate = (models) => {
         // TODO Add associations.
-        Course.belongsTo(models.User);
+        Course.belongsTo(models.User, {
+            // as: 'userId',
+            foreignKey: {
+                fieldName: 'userId',
+                allowNull: false,
+            }
+        });
     };
     return Course;
 };
