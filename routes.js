@@ -58,8 +58,8 @@ router.post('/courses', asyncHandler(async(req, res)=>{
         //res.json(course);
         res.status(201).location(`/courses/${course.id}'`).end();
     }catch(error){
-        //const errorMsgs = error.errors.map(error => error.message);
-        res.status(500).json(error);
+        const errorMsgs = error.errors.map(error => error.message);
+        res.status(500).json(errorMsgs);
     }
 }))
 //==============================EXPORTS=======================================
