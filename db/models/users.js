@@ -1,7 +1,6 @@
 //ADDED ON STEP 4 - CREATE USER MODEL
 'use strict';
 const { Model } = require('sequelize');
-const { Sequelize } = require('..');
 
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
