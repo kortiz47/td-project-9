@@ -27,11 +27,11 @@ router.get('/users', asyncHandler(async (req, res) => {
 router.post('/users', asyncHandler(async (req, res) => {
     let user;
     try {
-        user = await User.build(req.body);
+        user = await User.create(req.body);
         res.status(201).location('/').end();
     } catch (error) {
         const errorMsgs = error.errors.map(error => error.message);
-        res.json(errorMsgs);
+        res.status(500).json(errorMsgs);
     }
 }));
 
@@ -59,7 +59,7 @@ router.post('/courses', asyncHandler(async(req, res)=>{
         res.status(201).location(`/courses/${course.id}'`).end();
     }catch(error){
         //const errorMsgs = error.errors.map(error => error.message);
-        res.json(error);
+        res.status(500).json(error);
     }
 }))
 //==============================EXPORTS=======================================
