@@ -15,35 +15,40 @@ function asyncHandler(cb) {
         }
     }
 }
-//==================================ROUTES=====================================
+//==================================USER routes=====================================
+
 /** GET all properties and values for the currently authenticated User */
 router.get('/users', asyncHandler(async (req, res) => {
-    let user = await User.findAll();
+    const user = await User.findAll();
     res.json(user);
 }));
 
-router.post('/users', asyncHandler(async(req, res)=>{
+/** POST route to create new user and location header to / */
+router.post('/users', asyncHandler(async (req, res) => {
     let user;
-    try{
-        user =  await User.build(req.body);
+    try {
+        user = await User.build(req.body);
         res.redirect(201, '/');
-    }catch(error){
+    } catch (error) {
         const errorMsgs = error.errors.map(error => error.message);
         res.send(errorMsgs);
     }
 }));
-// router.post('/users', asyncHandler(async(req, res)=>{
-//     console.log(req.body);
-//     try{
-//         let user;
-//         user = await User.create(req.body);
-//         res.status(201).end();
-//     }catch(error){
-//         res.send(error);
-//     }
-    
-    
-// }));
+
+//==================================COURSE routes====================================
+/** GET all courses and userId associated with it */
+router.get('/courses', asyncHandler(async (req, res) => {
+    const course = await Course.findAll();
+    res.json(course);
+}));
+
+/** GET a specific course and userId associated with it */
+router.get('/courses/:id', asyncHandler(async(req, res)=>{
+    const id = req.params.id;
+    const course = await Course.findByPk(id);
+    res.json(course);
+}))
+
 
 //==============================EXPORTS=======================================
 
