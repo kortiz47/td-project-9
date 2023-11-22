@@ -4,6 +4,12 @@ const router = express.Router();
 const User = require("./models").User;
 const Course = require("./models").Course;
 const { Op } = require("sequelize");
+//body parser
+const bodyParser = require('body-parser');
+// parse application/x-www-form-urlencoded
+router.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
+router.use(bodyParser.json());
 
 //=============================TRY/CATCH HANDLER=============================
 function asyncHandler(cb) {
@@ -25,6 +31,7 @@ router.get('/users', asyncHandler(async (req, res) => {
 
 /** POST route to create new user and location header to / */
 router.post('/users', asyncHandler(async (req, res) => {
+    console.log(req.body);
     let user;
     try {
         user = await User.create(req.body);

@@ -7,6 +7,10 @@ const indexRoute = require('./routes');
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
+//body parser
+const bodyParser = require('body-parser');
+
+
 //connection to the database
 const db = require('./models/index');
 const sequelize = db.sequelize;
@@ -28,6 +32,11 @@ const app = express();
 
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
+app.use(bodyParser.json());
 
 //have all routes start with /api
 app.use('/api', indexRoute);
