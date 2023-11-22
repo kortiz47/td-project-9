@@ -28,10 +28,10 @@ router.post('/users', asyncHandler(async (req, res) => {
     let user;
     try {
         user = await User.build(req.body);
-        res.redirect(201, '/');
+        res.status(201).location('/').end();
     } catch (error) {
         const errorMsgs = error.errors.map(error => error.message);
-        res.send(errorMsgs);
+        res.json(errorMsgs);
     }
 }));
 
@@ -49,7 +49,19 @@ router.get('/courses/:id', asyncHandler(async(req, res)=>{
     res.json(course);
 }))
 
-
+/** POST a new course to /courses */
+router.post('/courses', asyncHandler(async(req, res)=>{
+    let course;
+    try{
+        course = await Course.create(req.body);
+        console.log(course);
+        //res.json(course);
+        res.status(201).location(`/courses/${course.id}'`).end();
+    }catch(error){
+        //const errorMsgs = error.errors.map(error => error.message);
+        res.json(error);
+    }
+}))
 //==============================EXPORTS=======================================
 
 module.exports = router;
