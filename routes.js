@@ -40,6 +40,17 @@ router.post('/users', asyncHandler(async (req, res) => {
         const errorMsgs = error.errors.map(error => error.message);
         res.status(500).json(errorMsgs);
     }
+    //TODO
+    
+    //USER validations - all 400 errors
+    /**
+     * include validation to make sure the following required values are properly submitted
+     * firstName
+     * if(!user.firstName) - send a validation error - EXTRA: could also use regex in the User model under firstName to add more validation
+     * if(!user.lastName) - same as firstName
+     * if(!user.emailAddress) - same and in the model change STRING to isEmail
+     * if(!user.password) - if there needs to be constraints on the password check for that
+     */
 }));
 
 //==================================COURSE routes====================================
@@ -50,25 +61,73 @@ router.get('/courses', asyncHandler(async (req, res) => {
 }));
 
 /** GET a specific course and userId associated with it */
-router.get('/courses/:id', asyncHandler(async(req, res)=>{
+router.get('/courses/:id', asyncHandler(async (req, res) => {
     const id = req.params.id;
     const course = await Course.findByPk(id);
     res.json(course);
 }))
 
 /** POST a new course to /courses */
-router.post('/courses', asyncHandler(async(req, res)=>{
+router.post('/courses', asyncHandler(async (req, res) => {
     let course;
-    try{
+    try {
         course = await Course.create(req.body);
         console.log(course);
         //res.json(course);
         res.status(201).location(`/courses/${course.id}'`).end();
-    }catch(error){
+    } catch (error) {
         const errorMsgs = error.errors.map(error => error.message);
         res.status(500).json(errorMsgs);
     }
+    //TO DO
+
+    //COURSE validations
+    /**
+     * if(!course.title) - send error 400
+     * if(!course.description) - send error 400
+     */
 }))
+
+/** PUT (edit) an existing course */
+router.put('/courses/:id', asyncHandler(async (req, res) => {
+    let course;
+    try {
+        const id = req.params.id;
+        course = await Course.findByPk(id);
+    //COURSE validations
+    /**
+     * if(!course.title) - send error 400
+     * if(!course.description) - send error 400
+     * else you can send the correct status
+     */
+        if(course){
+            course.update(req.body);
+            res.status(204).end();
+        } else {
+            res.status(404).end();
+        }
+    } catch (error) {
+        const errorMsgs = error.errors.map(error => error.message);
+        res.status(500).json(errorMsgs);
+    }
+}));
+
+/** DELETE an existing course */
+router.delete('/courses/:id', asyncHandler(async(req, res)=>{
+    const id = req.params.id;
+    let course;
+    try{
+        course = await Course.findByPk(id);
+        if(course){
+            await course.destroy();
+            res.status(204).end();
+        }else{
+            res.status(404).end();
+        }
+    }catch(error){
+
+    }
+}));
 //==============================EXPORTS=======================================
 
 module.exports = router;
