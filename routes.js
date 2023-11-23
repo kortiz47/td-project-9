@@ -50,6 +50,7 @@ router.post('/users', asyncHandler(async (req, res) => {
      * if(!user.lastName) - same as firstName
      * if(!user.emailAddress) - same and in the model change STRING to isEmail
      * if(!user.password) - if there needs to be constraints on the password check for that
+     * also add hashing to the password
      */
 }));
 
