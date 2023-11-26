@@ -1,6 +1,8 @@
 //ADDED ON STEP 4 - CREATE USER MODEL
 'use strict';
 const { Model } = require('sequelize');
+const bcrypt = require('bcryptjs');
+const salt = bcrypt.genSaltSync(10);
 
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
@@ -29,8 +31,21 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         password: {
-            type: DataTypes.STRING
-        }
+            type: DataTypes.STRING,
+            // set(val) {
+            //     if (val === this.password) {
+            //         const hashedPassword = bcrypt.hashSync(this.password, salt);
+            //         this.setDataValue('password', hashedPassword);
+            //     }
+            // },
+            // allowNull: false,
+            // validate: {
+            //     notNull: {
+            //         msg: 'You cannot have an empty password'
+            //     }
+            // }
+
+        },
     }, { sequelize });
     User.associate = (models) => {
         // TODO Add associations.

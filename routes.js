@@ -42,17 +42,17 @@ router.post('/users', asyncHandler(async (req, res) => {
     let user;
     try {
         user = await User.build(req.body);
-
-        if (!user.firstName || '') {
+        console.log(user);
+        if (!user.firstName) {
             errors.push("Please provide a value for 'first name'");
         }
-        if (!user.lastName || '') {
+        if (!user.lastName) {
             errors.push("Please provide a value for 'last name'");
         }
-        if (!user.emailAddress || '') {
+        if (!user.emailAddress) {
             errors.push("Please provide a value for 'email address'");
         }
-        if (!user.password || '') {
+        if (!user.password) {
             errors.push("Please provide a value for 'password'");
         }
 
@@ -63,6 +63,7 @@ router.post('/users', asyncHandler(async (req, res) => {
             res.status(201).location('/').end();
         }
     } catch (error) {
+        console.log(error);
         const errors = error.errors.map(error => error.message);
         res.status(500).json(errors);
     }
