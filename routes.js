@@ -93,7 +93,7 @@ router.post('/users', asyncHandler(async (req, res) => {
             res.status(201).location('/').end();
         }
     } catch (error) {
-        if (error.name === 'SequelizeUniqueConstraintError') {
+        if (error.name === 'SequelizeUniqueConstraintError' || error.name === 'SequelizeValidationError') {
             const errors = error.errors.map(error => error.message);
             res.status(400).json(errors);
         } else {
@@ -101,17 +101,6 @@ router.post('/users', asyncHandler(async (req, res) => {
         }
     }
 }));
-
-// router.delete('/users/:id', asyncHandler(async (req, res) => {
-//     const id = req.params.id;
-//     const user = await User.findByPk(id);
-//     if (user) {
-//         await user.destroy();
-//         res.status(204).end();
-//     } else {
-//         res.status(404).end();
-//     }
-// }));
 
 //==================================COURSE routes====================================
 /** GET all courses and userId associated with it */
@@ -155,7 +144,7 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
             res.status(400).json({ errors }).end();
         } else {
             await course.save();
-            res.status(201).location(`/courses/${course.id}'`).end();
+            res.status(201).location(`/courses/${course.id}`).end();
         }
     } catch (error) {
         const errors = error.errors.map(error => error.message);
@@ -173,30 +162,31 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     const id = req.params.id;
     const course = await Course.findByPk(id);
     if (course) {
-        await course.set({
-            title: req.body.title,
-            description: req.body.description,
-            estimatedTime: req.body.estimatedTime,
-            materialsNeeded: req.body.materialsNeeded,
-            userId: req.body.userId
-        })
+        if (course.userId == user) {
+            await course.set({
+                title: req.body.title,
+                description: req.body.description,
+                estimatedTime: req.body.estimatedTime,
+                materialsNeeded: req.body.materialsNeeded,
+                userId: req.body.userId
+            })
 
-        if (!course.title) {
-            errors.push("Please provide a value for 'title'");
-        }
-        if (!course.description) {
-            errors.push("Please provide a value for 'description'");
-        }
+            if (!course.title) {
+                errors.push("Please provide a value for 'title'");
+            }
+            if (!course.description) {
+                errors.push("Please provide a value for 'description'");
+            }
 
-        if (errors.length > 0) {
-            res.status(400).json({ errors }).end();
-        } else if (user == course.userId) {
-            await course.save();
-            res.status(204).end();
+            if (errors.length > 0) {
+                res.status(400).json({ errors }).end();
+            } else {
+                await course.save();
+                res.status(204).end();
+            }
         } else {
             res.status(403).end();
         }
-
     } else {
         res.status(404).end();
     }
@@ -212,7 +202,7 @@ router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) =>
     const course = await Course.findByPk(id);
     const user = req.currentUser.id;
     if (course) {
-        if (user == course.userId) {
+        if (course.userId == user) {
             await course.destroy();
             res.status(204).end();
         } else {
