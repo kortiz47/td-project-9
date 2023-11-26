@@ -55,14 +55,13 @@ const authenticateUser = async (req, res, next) => {
 
 /** GET all properties and values for the currently authenticated User */
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
-    const users = await User.findAll({ attributes: ['id', 'firstName', 'lastName', 'emailAddress']});
+    const users = await User.findAll({ attributes: ['id', 'firstName', 'lastName', 'emailAddress'] });
     res.json(users);
 }));
 
 
 
 /** POST route to create new user and location header to / */
-//come back and add try/catch if you need it
 router.post('/users', asyncHandler(async (req, res) => {
     const errors = [];
     let user;
@@ -89,11 +88,13 @@ router.post('/users', asyncHandler(async (req, res) => {
             res.status(201).location('/').end();
         }
     } catch (error) {
-        console.log(error);
-        const errors = error.errors.map(error => error.message);
-        res.status(500).json(errors);
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            const errors = error.errors.map(error => error.message);
+            res.status(400).json(errors);
+        } else {
+            throw error;
+        }
     }
-
 }));
 
 // router.delete('/users/:id', asyncHandler(async (req, res) => {
