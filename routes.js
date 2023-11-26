@@ -55,7 +55,11 @@ const authenticateUser = async (req, res, next) => {
 
 /** GET all properties and values for the currently authenticated User */
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
-    const users = await User.findAll({ attributes: ['id', 'firstName', 'lastName', 'emailAddress'] });
+    const users = await User.findAll({
+        attributes: {
+            exclude: ['password', 'createdAt', 'updatedAt'],
+        },
+    });
     res.json(users);
 }));
 
@@ -111,7 +115,11 @@ router.post('/users', asyncHandler(async (req, res) => {
 //==================================COURSE routes====================================
 /** GET all courses and userId associated with it */
 router.get('/courses', asyncHandler(async (req, res) => {
-    const course = await Course.findAll();
+    const course = await Course.findAll({
+        attributes: {
+            exclude: ['createdAt', 'updatedAt']
+        }
+    });
     res.json(course);
 }));
 
@@ -120,7 +128,11 @@ router.get('/courses', asyncHandler(async (req, res) => {
 /** GET a specific course and userId associated with it */
 router.get('/courses/:id', asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const course = await Course.findByPk(id);
+    const course = await Course.findByPk(id, {
+        attributes: {
+            exclude: ['createdAt', 'updatedAt']
+        }
+    });
     res.json(course);
 }))
 
