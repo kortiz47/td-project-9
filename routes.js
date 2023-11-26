@@ -25,11 +25,10 @@ function asyncHandler(cb) {
 //============================AUTHENTICATION MIDDLEWARE=======================
 const authenticateUser = async (req, res, next) => {
     let message;
+    let user;
     const credentials = auth(req);
-    console.log(credentials);
     if (credentials) {
-        const user = await User.findOne({ where: { emailAddress: credentials.name } });
-        console.log(user);
+        user = await User.findOne({ where: { emailAddress: credentials.name } });
         if (user) {
             const authenticated = bcrypt.compareSync(credentials.pass, user.password);
             if (authenticated) {
@@ -146,14 +145,12 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     let course;
     try {
         course = await Course.build(req.body);
-
         if (!course.title || '') {
             errors.push("Please provide a value for 'title'");
         }
         if (!course.description || '') {
             errors.push("Please provide a value for 'description'");
         }
-
         if (errors.length > 0) {
             res.status(400).json({ errors }).end();
         } else {
@@ -172,9 +169,9 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
 /** PUT (edit) an existing course */
 router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     const errors = [];
+    const user = req.currentUser.id;
     const id = req.params.id;
     const course = await Course.findByPk(id);
-
     if (course) {
         await course.set({
             title: req.body.title,
@@ -193,9 +190,11 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
 
         if (errors.length > 0) {
             res.status(400).json({ errors }).end();
-        } else {
+        } else if (user == course.userId) {
             await course.save();
             res.status(204).end();
+        } else {
+            res.status(403).end();
         }
 
     } else {
@@ -211,9 +210,14 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
 router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     const id = req.params.id;
     const course = await Course.findByPk(id);
+    const user = req.currentUser.id;
     if (course) {
-        await course.destroy();
-        res.status(204).end();
+        if (user == course.userId) {
+            await course.destroy();
+            res.status(204).end();
+        } else {
+            res.status(403).end();
+        }
     } else {
         res.status(404).end();
     }
