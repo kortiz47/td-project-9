@@ -2,7 +2,7 @@
 'use strict';
 const { Model } = require('sequelize');
 const bcrypt = require('bcryptjs');
-const salt = bcrypt.genSaltSync(10);
+
 
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
@@ -32,19 +32,16 @@ module.exports = (sequelize, DataTypes) => {
         },
         password: {
             type: DataTypes.STRING,
-            // set(val) {
-            //     if (val === this.password) {
-            //         const hashedPassword = bcrypt.hashSync(this.password, salt);
-            //         this.setDataValue('password', hashedPassword);
-            //     }
-            // },
-            // allowNull: false,
-            // validate: {
-            //     notNull: {
-            //         msg: 'You cannot have an empty password'
-            //     }
-            // }
-
+            allowNull: false,
+            validate: {
+                notNull: {
+                    msg: 'You cannot have an empty password'
+                }
+            },
+            set(val) {
+                    const hashedPassword = bcrypt.hashSync(val, 10);
+                    this.setDataValue('password', hashedPassword);
+                }
         },
     }, { sequelize });
     User.associate = (models) => {
