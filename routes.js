@@ -55,8 +55,8 @@ const authenticateUser = async (req, res, next) => {
 
 /** GET all properties and values for the currently authenticated User */
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
-    const user = await User.findAll();
-    res.json(user);
+    const users = await User.findAll({ attributes: ['id', 'firstName', 'lastName', 'emailAddress']});
+    res.json(users);
 }));
 
 
@@ -68,7 +68,7 @@ router.post('/users', asyncHandler(async (req, res) => {
     let user;
     try {
         user = await User.build(req.body);
-        console.log(user);
+
         if (!user.firstName) {
             errors.push("Please provide a value for 'first name'");
         }
