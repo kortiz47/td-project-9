@@ -96,16 +96,16 @@ router.post('/users', asyncHandler(async (req, res) => {
 
 }));
 
-router.delete('/users/:id', asyncHandler(async (req, res) => {
-    const id = req.params.id;
-    const user = await User.findByPk(id);
-    if (user) {
-        await user.destroy();
-        res.status(204).end();
-    } else {
-        res.status(404).end();
-    }
-}));
+// router.delete('/users/:id', asyncHandler(async (req, res) => {
+//     const id = req.params.id;
+//     const user = await User.findByPk(id);
+//     if (user) {
+//         await user.destroy();
+//         res.status(204).end();
+//     } else {
+//         res.status(404).end();
+//     }
+// }));
 
 //==================================COURSE routes====================================
 /** GET all courses and userId associated with it */

@@ -23,12 +23,26 @@ module.exports = (sequelize, DataTypes) => {
         // },
         firstName: {
             type: DataTypes.STRING,
+            allowNull: false,
         },
         lastName: {
             type: DataTypes.STRING,
+            allowNull: false,
         },
         emailAddress: {
             type: DataTypes.STRING,
+            allowNull: false,
+            unique: {
+                msg: 'The email you entered already exists',
+            },
+            validate: {
+                notNull: {
+                    msg: 'An email is required',
+                },
+                isEmail: {
+                    msg: 'Please provide a valid email address',
+                },
+            }
         },
         password: {
             type: DataTypes.STRING,
@@ -39,9 +53,9 @@ module.exports = (sequelize, DataTypes) => {
                 }
             },
             set(val) {
-                    const hashedPassword = bcrypt.hashSync(val, 10);
-                    this.setDataValue('password', hashedPassword);
-                }
+                const hashedPassword = bcrypt.hashSync(val, 10);
+                this.setDataValue('password', hashedPassword);
+            }
         },
     }, { sequelize });
     User.associate = (models) => {
