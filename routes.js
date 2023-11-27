@@ -57,6 +57,9 @@ const authenticateUser = async (req, res, next) => {
 /** GET all properties and values for the currently authenticated User */
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
     const users = await User.findAll({
+        where: {
+            emailAddress: req.currentUser.emailAddress,
+        },
         attributes: {
             exclude: ['password', 'createdAt', 'updatedAt'],
         },
@@ -106,6 +109,12 @@ router.post('/users', asyncHandler(async (req, res) => {
 /** GET all courses and userId associated with it */
 router.get('/courses', asyncHandler(async (req, res) => {
     const course = await Course.findAll({
+        include: [{
+            model: User,
+            attributes: {
+                exclude: ['password', 'createdAt', 'updatedAt'],
+            }
+        }],
         attributes: {
             exclude: ['createdAt', 'updatedAt']
         }
@@ -119,6 +128,12 @@ router.get('/courses', asyncHandler(async (req, res) => {
 router.get('/courses/:id', asyncHandler(async (req, res) => {
     const id = req.params.id;
     const course = await Course.findByPk(id, {
+        include: [{
+            model: User,
+            attributes: {
+                exclude: ['password', 'createdAt', 'updatedAt'],
+            }
+        }],
         attributes: {
             exclude: ['createdAt', 'updatedAt']
         }
