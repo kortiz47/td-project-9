@@ -1,6 +1,6 @@
 # Treehouse Tech Degree Project 9
 
-***Treehouse Tech Degree Project 8: REST API***
+***Treehouse Tech Degree Project 9: REST API***
 
 This project is going for Exceeds Expectations and is a REST API. This API provides a way for user to interact with the database to perform all CRUD (create, read, update, and delete) operations on courses data. Additionally, users will be required to log in to create a new account or retrieve information on existing accounts.
 
